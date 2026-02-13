@@ -14,46 +14,48 @@
             background-color: #ffcad4;
             background-image: radial-gradient(circle, #ffdee2 10%, #ffcad4 90%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; /* Prevents scrollbars if button moves near edge */
+            overflow: hidden;
         }
 
-        .container {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.4);
-            padding: 50px;
+        /* This container acts as the "limit" for the No button */
+        .card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 60px 40px;
             border-radius: 30px;
-            backdrop-filter: blur(8px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            z-index: 5;
+            text-align: center;
+            width: 350px;
+            min-height: 250px;
+            z-index: 10;
         }
 
-        h1 { color: #d00000; font-size: 2.5rem; margin-bottom: 30px; }
+        h1 { color: #d00000; font-size: 2rem; margin-bottom: 40px; line-height: 1.2; }
 
         .btn-group {
             display: flex;
             justify-content: center;
-            align-items: center;
             gap: 20px;
-            min-height: 80px;
+            height: 50px;
         }
 
         button {
-            padding: 15px 35px;
-            font-size: 1.2rem;
+            padding: 12px 35px;
+            font-size: 1.1rem;
             font-weight: bold;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        #yesBtn { background-color: #e63946; color: white; z-index: 10; }
+        #yesBtn { background-color: #e63946; color: white; }
 
         #noBtn { 
             background-color: #f1f1f1; 
             color: #333; 
-            z-index: 999; /* Always stays on top of 'Yes' button */
-            transition: 0.1s ease; /* Smooth but fast movement */
+            transition: 0.1s;
+            z-index: 20; /* Ensures it stays above the card */
         }
 
         .heart {
@@ -71,8 +73,8 @@
 </head>
 <body>
 
-    <div class="container" id="mainContainer">
-        <h1 id="question">Will you be My Valentine for Life? ❤️</h1>
+    <div class="card" id="card">
+        <h1 id="question">Will you be My Valentine For Life? ❤️</h1>
         <div class="btn-group">
             <button id="yesBtn" onclick="celebrate()">Yes</button>
             <button id="noBtn" onmouseover="moveNoButton()" onclick="moveNoButton()">No</button>
@@ -80,7 +82,7 @@
     </div>
 
     <script>
-        // 1. Floating Hearts Background
+        // 1. Floating Background Hearts
         function createHeart() {
             const heart = document.createElement('div');
             heart.className = 'heart';
@@ -93,54 +95,36 @@
         }
         setInterval(createHeart, 400);
 
-        // 2. The Smart "No" Button Logic
+        // 2. Restricted No Button Logic
         function moveNoButton() {
             const noBtn = document.getElementById('noBtn');
-            const yesBtn = document.getElementById('yesBtn');
+            const card = document.getElementById('card');
             
-            noBtn.style.position = 'fixed'; // Fixed keeps it relative to the screen
+            // Switch to absolute positioning relative to the CARD
+            noBtn.style.position = 'absolute';
             
-            // Calculate screen boundaries
-            const padding = 20; // Keeps it from touching the very edge
-            const maxWidth = window.innerWidth - noBtn.offsetWidth - padding;
-            const maxHeight = window.innerHeight - noBtn.offsetHeight - padding;
-
-            let randomX, randomY;
-            let overlapping = true;
-
-            // Loop to ensure it doesn't land exactly on the Yes button
-            while (overlapping) {
-                randomX = Math.floor(Math.random() * maxWidth) + padding;
-                randomY = Math.floor(Math.random() * maxHeight) + padding;
-
-                // Get Yes button position
-                const yesRect = yesBtn.getBoundingClientRect();
-                
-                // Check if the new random position is far enough from Yes button
-                const buffer = 50; 
-                if (
-                    randomX + noBtn.offsetWidth < yesRect.left - buffer ||
-                    randomX > yesRect.right + buffer ||
-                    randomY + noBtn.offsetHeight < yesRect.top - buffer ||
-                    randomY > yesRect.bottom + buffer
-                ) {
-                    overlapping = false;
-                }
-            }
-
+            // Limit movement to INSIDE the card boundaries
+            // We subtract button size and a bit of padding (20px)
+            const maxX = card.clientWidth - noBtn.offsetWidth - 20;
+            const maxY = card.clientHeight - noBtn.offsetHeight - 20;
+            
+            // Generate random position within card
+            const randomX = Math.floor(Math.random() * maxX) + 10;
+            const randomY = Math.floor(Math.random() * maxY) + 10;
+            
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
         }
 
-        // 3. The "Yes" Logic
+        // 3. Yes Celebration
         function celebrate() {
-            const container = document.getElementById('mainContainer');
-            container.innerHTML = `
+            const card = document.getElementById('card');
+            card.innerHTML = `
                 <h1 style="font-size: 3rem;">🥰🎉</h1>
-                <h1>I knew you love me Mere Pajamaaaa!</h1>
-                <p style="color: #e63946; font-weight: bold;">See you soon! ❤️</p>
+                <h1>I knew you Love Me Mere Pajamaaaa!</h1>
+                <p style="color: #e63946; font-weight: bold;">Bittuuu Loves You! ❤️</p>
             `;
-            setInterval(createHeart, 50); // Heart explosion
+            setInterval(createHeart, 100); // More hearts
         }
     </script>
 </body>
