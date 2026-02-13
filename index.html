@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffcad4; /* Soft pink background */
+            background-image: radial-gradient(circle, #ffdee2 10%, #ffcad4 90%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 50px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        h1 {
+            color: #d00000;
+            font-size: 3rem;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            min-height: 60px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        #yesBtn {
+            background-color: #e63946;
+            color: white;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            background-color: #ff4d6d;
+        }
+
+        #noBtn {
+            background-color: #f1f1f1;
+            color: #333;
+            transition: none; /* Instant movement */
+        }
+
+        /* Floating background hearts */
+        .heart {
+            position: absolute;
+            color: #ff4d6d;
+            opacity: 0.6;
+            animation: float 6s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(110vh) scale(0); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainContainer">
+        <h1 id="question">Will you be my valentine? ❤️</h1>
+        <div class="btn-group">
+            <button id="yesBtn" onclick="celebrate()">Yes</button>
+            <button id="noBtn" onmouseover="moveNoButton()" onclick="moveNoButton()">No</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. Create floating hearts for the background
+        function createHearts() {
+            const heartIcons = ['❤️', '💖', '💝', '💕'];
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                    heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                    document.body.appendChild(heart);
+                }, i * 300);
+            }
+        }
+        createHearts();
+
+        // 2. Logic to move the 'No' button
+        function moveNoButton() {
+            const noBtn = document.getElementById('noBtn');
+            
+            // Switch to absolute positioning so it can fly anywhere
+            noBtn.style.position = 'absolute';
+            
+            // Calculate random coordinates within the window
+            const maxX = window.innerWidth - noBtn.offsetWidth;
+            const maxY = window.innerHeight - noBtn.offsetHeight;
+            
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        // 3. Logic for clicking 'Yes'
+        function celebrate() {
+            const container = document.getElementById('mainContainer');
+            container.innerHTML = `
+                <h1 style="font-size: 4rem;">🎉🥰</h1>
+                <h1>I knew you love me My Pajamaaaa!</h1>
+                <p style="color: #d00000; font-size: 1.2rem;">Best. Choice. Ever. ❤️</p>
+            `;
+            
+            // Extra heart explosion!
+            for(let i=0; i<50; i++) {
+                setTimeout(createHearts, i * 100);
+            }
+        }
+    </script>
+</body>
+</html>
